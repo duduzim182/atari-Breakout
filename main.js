@@ -1,5 +1,11 @@
 let ball;
 let paddle;
+let bricks = []; 
+let rows = 4;
+let cols = 8;
+let brikcWidth = 60;
+let brikcHeigth =20;
+let spacing =5;
 
 function setup() {
     createCanvas(600, 600);
@@ -16,6 +22,7 @@ function setup() {
         w: 100,
         h: 10
     }
+    creatBrikcs();
 }
 
 function draw() {
@@ -40,8 +47,27 @@ function draw() {
        let diff =ball.x - paddle.x
        ball.vx=diff*0.1
     }
+    for (let i = 0; i < bricks.length; i++){
+        fill(bricks[i].color)
+        rect(bricks[i].x, bricks[i].y, bricks[i].w, bricks[i].h);
+    }
 }
 function mousePressed(){
     ball.vx = random(4, -4)
     ball.vy = -5
+}
+function creatBrikcs(){
+    let totalWidth=cols*(brikcWidth+ spacing)-spacing;
+    let startx  = (width - totalWidth)-15;
+    for (let r = 0; r <rows; r++) {
+        for (let c = 0; c <rows; c++) {
+            bricks.push ({
+                x: startx + c * (brikcHeigth + spacing),
+                y: 80 + r * brikcHeigth,
+                w: brikcWidth - spacing,
+                h: brikcHeigth -5,
+                color:[random(100,255), random(100,255), random(100,255)]
+            })
+        }  
+    }
 }
