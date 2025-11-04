@@ -6,6 +6,9 @@ let cols = 8;
 let brikcWidth = 60;
 let brikcHeigth =20;
 let spacing =5;
+let score =0;
+let lives = 3;
+let gameState = "serve"
 
 function setup() {
     createCanvas(600, 600);
@@ -51,18 +54,35 @@ function draw() {
         fill(bricks[i].color)
         rect(bricks[i].x, bricks[i].y, bricks[i].w, bricks[i].h);
     }
+    for (let i= bricks.length-1;i >= 0; i--){
+        let b = bricks[i];
+        if (ball.x + ball.r >b.x&& ball.x - ball.r < b.x + b.w &&
+            ball.y + ball.r > b.y && ball.y - ball.r < b.y + b.h
+        ){
+            ball.vy*=-1;
+            score+=5
+            bricks.splice(i,1)
+            break;
+        }
+    }
+    fill(255);
+    textSize (16);
+    text("score: "+ score,20,20);
+    text("lives: "+lives, 20,40);
+    text("clllique para lançar a bola",width/2-100,height/2)
 }
 function mousePressed(){
     ball.vx = random(4, -4)
     ball.vy = -5
 }
 function creatBrikcs(){
+    bricks=[];
     let totalWidth=cols*(brikcWidth+ spacing)-spacing;
     let startx  = (width - totalWidth)-15;
     for (let r = 0; r <rows; r++) {
-        for (let c = 0; c <rows; c++) {
+        for (let c = 0; c <cols; c++) {
             bricks.push ({
-                x: startx + c * (brikcHeigth + spacing),
+                x: startx + c * (brikcWidth + spacing),
                 y: 80 + r * brikcHeigth,
                 w: brikcWidth - spacing,
                 h: brikcHeigth -5,
