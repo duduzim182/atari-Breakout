@@ -9,6 +9,7 @@ let spacing =5;
 let score =0;
 let lives = 3;
 let gameState = "serve"
+let maxSpeed =12;
 
 function setup() {
     createCanvas(600, 600);
@@ -30,21 +31,26 @@ function setup() {
 
 function draw() {
     background(0);
-    ellipseMode(RADIUS);
-    fill("white")
-    ellipse(ball.x, ball.y, ball.r)
-    fill("yellow")
-    rectMode(CENTER)
-    rect(paddle.x, paddle.y, paddle.w, paddle.h)
-    paddle.x=constrain(mouseX, paddle.w/2, width-paddle.w/2)
-    for (let i = 0; i < bricks.length; i++){
-        fill(bricks[i].color)
-        rect(bricks[i].x, bricks[i].y, bricks[i].w, bricks[i].h);
-    }
+
     fill(255);
     textSize (16);
     text("score: "+ score,20,20);
     text("lives: "+lives, 20,40);
+
+    for (let i = 0; i < bricks.length; i++){
+        fill(bricks[i].color)
+        rect(bricks[i].x, bricks[i].y, bricks[i].w, bricks[i].h);
+    }
+
+    ellipseMode(RADIUS);
+    fill("white")
+    ellipse(ball.x, ball.y, ball.r)
+
+    fill("yellow")
+    rectMode(CENTER)
+    rect(paddle.x, paddle.y, paddle.w, paddle.h)
+    paddle.x=constrain(mouseX, paddle.w/2, width-paddle.w/2)
+    
     if(gameState==="serve"){
         textSize(18);
         text("clique para lançar a bola",width/2-100,height/2);
@@ -56,16 +62,18 @@ function draw() {
     if(gameState==="play"){
         ball.x += ball.vx
         ball.y += ball.vy
-         if (ball.x - ball.r<0||ball.x+ ball.r>width) ball.vx*=-1;
+
+        if (ball.x - ball.r<0||ball.x+ ball.r>width) ball.vx*=-1;
         if (ball.y - ball.r<0) ball.vy*=-1;
+
         if (ball.y + ball.r > paddle.y - paddle.h/2 &&
-            ball.y + ball.r > paddle.y + paddle.h/2 &&
+            ball.y + ball.r < paddle.y + paddle.h/2 &&
             ball.x > paddle.x - paddle.w/2 &&
             ball.x < paddle.x + paddle.w/2
         ){
             ball.vy*=-1
-        let diff =ball.x - paddle.x
-        ball.vx=diff*0.1
+            let diff =ball.x - paddle.x
+            ball.vx=diff*0.1
         }
         for (let i= bricks.length-1;i >= 0; i--){
             let b = bricks[i];
@@ -73,6 +81,10 @@ function draw() {
                 ball.y + ball.r > b.y && ball.y - ball.r < b.y + b.h
             ){
                 ball.vy*=-1;
+                ball.vx*=1.05;
+                ball.vy*=1.05;
+                ball.vx = constrain(ball.vx,  -maxSpeed, maxSpeed);
+                ball.vy = constrain(ball.vy,  -maxSpeed, maxSpeed);
                 score+=5
                 bricks.splice(i,1)
                 break;
@@ -101,9 +113,11 @@ function draw() {
     }
 }
 function mousePressed(){
+    if (gameState==="serve"&&ball){
     ball.vx = random(4, -4)
     ball.vy = -5;
     gameState="play";
+    }
 }
 function creatBrikcs(){
     bricks=[];
