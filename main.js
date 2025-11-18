@@ -10,6 +10,7 @@ let score =0;
 let lives = 3;
 let gameState = "serve"
 let maxSpeed =12;
+let brickSpeed = 0.1;
 
 function setup() {
     createCanvas(600, 600);
@@ -38,8 +39,13 @@ function draw() {
     text("lives: "+lives, 20,40);
 
     for (let i = 0; i < bricks.length; i++){
+        bricks[i].y+=brickSpeed
         fill(bricks[i].color)
         rect(bricks[i].x, bricks[i].y, bricks[i].w, bricks[i].h);
+        if(bricks[i].y+bricks[i].h>=paddle.y-paddle.h/2){
+            lives=0;
+            gameState="over";
+        }
     }
 
     ellipseMode(RADIUS);
